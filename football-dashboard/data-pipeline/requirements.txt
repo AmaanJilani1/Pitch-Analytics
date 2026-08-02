@@ -1,0 +1,4 @@
+pandas>=2.0
+numpy>=1.24
+rapidfuzz>=3.0
+kaggle>=1.5

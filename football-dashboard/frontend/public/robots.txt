@@ -1,0 +1,6 @@
+# Allow search engines to index all pages
+User-agent: *
+Allow: /
+
+# Sitemap URL
+Sitemap: https://statlyx.vercel.app/sitemap.xml
