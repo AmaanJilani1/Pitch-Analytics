@@ -68,7 +68,7 @@ export default function Browse() {
   return (
     <div className="space-y-8">
       <SEO
-        title="Master Player Roster & Intelligence"
+        title="Football Scouting & Intelligence"
         description="Search, filter, and analyze 2,839+ professional football players across Europe's Top 5 leagues with market valuations and radar profiles."
       />
       {/* Stitch Hero Band */}

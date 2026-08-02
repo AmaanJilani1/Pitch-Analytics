@@ -12,7 +12,7 @@ export default function SEO({ title, description }: SEOProps) {
     const defaultDesc = 'Track and analyze 2,839+ professional football players across Europe\'s Top 5 leagues with interactive radar profiles and similarity analytics.'
 
     // Update document title
-    document.title = title ? `${title} | Statlyx` : defaultTitle
+    document.title = title ? `Statlyx | ${title}` : defaultTitle
 
     // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]')
@@ -23,7 +23,7 @@ export default function SEO({ title, description }: SEOProps) {
     // Update Open Graph title & description
     const ogTitle = document.querySelector('meta[property="og:title"]')
     if (ogTitle) {
-      ogTitle.setAttribute('content', title ? `${title} | Statlyx` : defaultTitle)
+      ogTitle.setAttribute('content', title ? `Statlyx | ${title}` : defaultTitle)
     }
 
     const ogDesc = document.querySelector('meta[property="og:description"]')
