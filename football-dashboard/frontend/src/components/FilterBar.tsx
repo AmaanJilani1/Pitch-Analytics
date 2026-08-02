@@ -31,9 +31,18 @@ const ageRanges: { label: string; value: [number, number] }[] = [
   { label: '30+ yrs', value: [30, 40] },
 ]
 
+const sortOptions: { label: string; value: NonNullable<Filters['sortBy']> }[] = [
+  { label: 'Highest Valuation', value: 'market_value' },
+  { label: '⚽ Highest Goals', value: 'goals' },
+  { label: '🅰️ Highest Assists', value: 'assists' },
+  { label: '⏱️ Most Minutes', value: 'minutes' },
+  { label: '🔤 Name (A-Z)', value: 'name' },
+]
+
 export default function FilterBar({ filters, onChange }: FilterBarProps) {
   const selectedLeague = filters.leagues[0] || ''
   const selectedPosition = filters.positions[0] || ''
+  const selectedSort = filters.sortBy || 'market_value'
 
   const selectedAgeKey = useMemo(() => {
     const [min, max] = filters.ageRange
@@ -50,6 +59,15 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
     const sanitized = e.target.value.replace(/[<>]/g, '')
     update({ search: sanitized })
   }
+
+  const isFiltered = Boolean(
+    filters.search ||
+    selectedLeague ||
+    selectedPosition ||
+    filters.ageRange[0] !== 16 ||
+    filters.ageRange[1] !== 40 ||
+    selectedSort !== 'market_value'
+  )
 
   return (
     <div className="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] p-4 mb-8 flex flex-wrap items-center gap-4 border border-surface-container-high">
@@ -76,6 +94,20 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
 
       {/* Dropdown Filters */}
       <div className="flex flex-wrap items-center gap-3">
+        {/* Sort Dropdown (Highest Goals, Valuation, etc.) */}
+        <div className="relative">
+          <select
+            value={selectedSort}
+            onChange={e => update({ sortBy: e.target.value as Filters['sortBy'] })}
+            className="appearance-none bg-primary-container/10 border border-primary/20 rounded-lg pl-4 pr-10 py-3 font-body-sm text-body-sm font-bold text-primary focus:ring-2 focus:ring-primary cursor-pointer transition-all"
+          >
+            {sortOptions.map(s => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-primary">swap_vert</span>
+        </div>
+
         {/* League Dropdown */}
         <div className="relative">
           <select
@@ -118,19 +150,14 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
           <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline-variant">expand_more</span>
         </div>
 
-        {/* Reset / Apply Filters Button */}
-        {(filters.search || selectedLeague || selectedPosition || filters.ageRange[0] !== 16 || filters.ageRange[1] !== 40) ? (
+        {/* Reset Filters Button */}
+        {isFiltered && (
           <button
-            onClick={() => onChange({ search: '', leagues: [], positions: [], ageRange: [16, 40], clubs: [] })}
+            onClick={() => onChange({ search: '', leagues: [], positions: [], ageRange: [16, 40], clubs: [], sortBy: 'market_value' })}
             className="bg-tertiary text-white px-5 py-3 rounded-lg font-label-caps text-label-caps hover:bg-tertiary-container transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-sm">refresh</span>
             Reset Filters
-          </button>
-        ) : (
-          <button className="bg-primary text-white px-6 py-3 rounded-lg font-label-caps text-label-caps hover:bg-primary-container transition-all flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm">filter_list</span>
-            Apply Filters
           </button>
         )}
       </div>

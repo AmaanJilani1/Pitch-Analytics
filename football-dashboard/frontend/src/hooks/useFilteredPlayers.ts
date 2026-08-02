@@ -7,6 +7,7 @@ export interface Filters {
   positions: string[]
   ageRange: [number, number]
   clubs: string[]
+  sortBy?: 'market_value' | 'goals' | 'assists' | 'minutes' | 'name'
 }
 
 const normalizeText = (text: string) =>
@@ -16,7 +17,7 @@ export function useFilteredPlayers(players: PlayerSummary[], filters: Filters) {
   return useMemo(() => {
     const searchNormalized = normalizeText(filters.search || '')
 
-    return players.filter(p => {
+    const filtered = players.filter(p => {
       const nameNorm = normalizeText(p.name)
       const clubNorm = normalizeText(p.club)
 
@@ -30,6 +31,15 @@ export function useFilteredPlayers(players: PlayerSummary[], filters: Filters) {
       const matchesClub = filters.clubs.length === 0 || filters.clubs.includes(p.club)
 
       return matchesSearch && matchesLeague && matchesPosition && matchesAge && matchesClub
+    })
+
+    const sortBy = filters.sortBy || 'market_value'
+    return [...filtered].sort((a, b) => {
+      if (sortBy === 'goals') return b.goals - a.goals || b.market_value - a.market_value
+      if (sortBy === 'assists') return b.assists - a.assists || b.market_value - a.market_value
+      if (sortBy === 'minutes') return b.minutes - a.minutes
+      if (sortBy === 'name') return a.name.localeCompare(b.name)
+      return b.market_value - a.market_value
     })
   }, [players, filters])
 }

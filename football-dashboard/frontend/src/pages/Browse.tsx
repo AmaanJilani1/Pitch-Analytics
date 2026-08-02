@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { usePlayers } from '@/hooks/usePlayers'
-import { useFilteredPlayers } from '@/hooks/useFilteredPlayers'
+import { useFilteredPlayers, Filters } from '@/hooks/useFilteredPlayers'
 import FilterBar from '@/components/FilterBar'
 import PlayerCard from '@/components/PlayerCard'
 import AnimatedStatCounter from '@/components/AnimatedStatCounter'
@@ -10,12 +10,13 @@ const PAGE_SIZE = 24
 
 export default function Browse() {
   const { players, loading } = usePlayers()
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     search: '',
     leagues: [] as string[],
     positions: [] as string[],
     ageRange: [16, 40] as [number, number],
     clubs: [] as string[],
+    sortBy: 'market_value',
   })
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
