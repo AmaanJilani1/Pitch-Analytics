@@ -1,0 +1,19 @@
+# Statlyx — Football Scouting & Intelligence Platform
+
+> A high-performance sports analytics web application tracking 2,839+ professional football players across Europe's Top 5 leagues (Premier League, La Liga, Bundesliga, Serie A, Ligue 1).
+
+## System Architecture & Tech Stack
+- Frontend: React 18, TypeScript, Vite 5, Tailwind CSS 3, Recharts, Framer Motion
+- Data Architecture: Jamstack static JSON API endpoints generated via Python analytics pipeline
+- Analytics Algorithms: Vector Cosine Similarity (k-NN) matching, Positional Cumulative Percentile Normalization, Levenshtein Fuzzy Entity Matching
+
+## Core Features
+- Master Player Roster: Search, filter by position/league/age, and sort by Highest Goals, Assists, Valuation, or Minutes.
+- Athlete Scouting Profiles: Multi-axis radar skill profiles, historical market valuation curves, and similar player recommendations.
+- Head-to-Head Comparison Matrix: Dual-polygon radar overlays, statistical leader badges, and valuation parity cards.
+- League Intelligence & Performance Metrics: Top goal leader benchmarks, positional physical workloads, and biological age peak distribution histograms.
+
+## Key Web Pages
+- [Master Player Roster](https://statlyx.vercel.app/)
+- [Head-to-Head Comparison](https://statlyx.vercel.app/compare)
+- [League Intelligence](https://statlyx.vercel.app/insights)
