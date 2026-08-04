@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { PlayerDetail, PlayerSummary } from '@/types'
 
+// Cache individual player details by ID
+const playerDetailCache = new Map<number, PlayerDetail>()
+
 function createFallbackPlayerDetail(summary: PlayerSummary): PlayerDetail {
   const g90 = summary.goals_per_90 || (summary.minutes > 0 ? (summary.goals / summary.minutes) * 90 : 0)
   const a90 = summary.assists_per_90 || (summary.minutes > 0 ? (summary.assists / summary.minutes) * 90 : 0)
@@ -66,12 +69,23 @@ function createFallbackPlayerDetail(summary: PlayerSummary): PlayerDetail {
 }
 
 export function usePlayerData(id: number | null, summary?: PlayerSummary) {
-  const [player, setPlayer] = useState<PlayerDetail | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [player, setPlayer] = useState<PlayerDetail | null>(() => {
+    return id ? playerDetailCache.get(id) || null : null
+  })
+  const [loading, setLoading] = useState(!player)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!id) return
+
+    // If detail is cached in memory, set immediately
+    const cached = playerDetailCache.get(id)
+    if (cached) {
+      setPlayer(cached)
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     fetch(`/data/player_details/${id}.json`)
       .then(res => {
@@ -79,12 +93,15 @@ export function usePlayerData(id: number | null, summary?: PlayerSummary) {
         return res.json()
       })
       .then((data: PlayerDetail) => {
+        playerDetailCache.set(id, data)
         setPlayer(data)
         setLoading(false)
       })
       .catch(() => {
         if (summary) {
-          setPlayer(createFallbackPlayerDetail(summary))
+          const fallback = createFallbackPlayerDetail(summary)
+          playerDetailCache.set(id, fallback)
+          setPlayer(fallback)
         } else {
           setError('Player detail unavailable')
         }
